@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { CustomInput } from "../common/customInput";
+import { CustomInput } from "../common/CustomInput";
 interface TransactionModalProps {
   onClose: () => void;
 }
@@ -22,7 +22,7 @@ export default function CreateTxnModal(
 
     try {
       const response = await fetch(
-        `${process.env.BACKEND_BASE_URL}/transaction/create`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/create`,
         {
           method: "POST",
           headers: {
@@ -35,15 +35,11 @@ export default function CreateTxnModal(
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error creating transaction:", errorData);
-        alert("Failed to create transaction.");
         return;
       }
-
-      alert("Transaction created successfully!");
       onClose();
     } catch (error) {
       console.error("Error creating transaction:", error);
-      alert("An error occurred while creating the transaction.");
     }
   };
 

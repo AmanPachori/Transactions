@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { CustomInput } from "../components/common/customInput";
+import { CustomInput } from "../components/common/CustomInput";
 import axios from "axios";
 
 export default function Signin() {

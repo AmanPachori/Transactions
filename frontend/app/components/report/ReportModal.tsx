@@ -1,7 +1,7 @@
 "use client";
 import { TransactionReport } from "@/app/utils/type";
 import React from "react";
-import SortableTable from "../common/table";
+import SortableTable from "../common/Table";
 interface ReportModalProps {
   TransactionReport: TransactionReport | undefined;
   onClose: () => void;

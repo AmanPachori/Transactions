@@ -1,18 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import TransactionModal from "./transactionModal";
-
-interface Transaction {
-  _id: string;
-  transactionId: string;
-  userId: string;
-  userName: string;
-  type: string;
-  amount: number;
-  description: string;
-  datetime: string;
-  __v: number;
-}
+import TransactionModal from "./TransactionModal";
+import Pagination from "./Pagination";
+import { Transaction } from "@/app/utils/type";
 
 interface SortableTableProps {
   data: Transaction[] | undefined;
@@ -20,6 +10,11 @@ interface SortableTableProps {
 
 const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
   const [sortField, setSortField] = useState<string>("amount");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -43,14 +38,26 @@ const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
     }
   };
 
-  const sortedData = data?.sort((x, y) => {
-    const a: unknown = field(x, sortField);
-    const b: unknown = field(y, sortField);
+  const sortedData = Array.isArray(data)
+    ? data.sort((x, y) => {
+        const a: unknown = field(x, sortField);
+        const b: unknown = field(y, sortField);
 
-    if (a < b) return sortOrder === "asc" ? -1 : 1;
-    if (a > b) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
+        if (a < b) return sortOrder === "asc" ? -1 : 1;
+        if (a > b) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+      })
+    : [];
+
+  const itemsPerPage = 10;
+  const totalPages = sortedData
+    ? Math.ceil(sortedData?.length / itemsPerPage)
+    : 0;
+
+  const PaginatedData = sortedData?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="overflow-x-auto mx-4 rounded-xl border border-gray-600">
@@ -83,28 +90,38 @@ const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {sortedData.map((transaction) => (
-            <tr
-              onClick={() => setSelectedTransaction(transaction)}
-              key={transaction._id}
-              className="border-t hover:bg-gray-50"
-            >
-              <td className="py-3 px-2 ">{transaction.transactionId}</td>
-              <td className="hidden lg:block py-3 px-2">
-                {transaction.userName}
-              </td>
-              <td className="py-3 px-2">{transaction.type}</td>
-              <td className="py-3 px-2">{transaction.amount}</td>
-              <td className="py-3 px-2">
-                {new Date(transaction.datetime).toLocaleString()}
-              </td>
-              <td className="py-3 px-2 hidden lg:block">
-                {transaction.description}
-              </td>
-            </tr>
-          ))}
+          {PaginatedData &&
+            PaginatedData.map((transaction) => (
+              <tr
+                onClick={() => setSelectedTransaction(transaction)}
+                key={transaction._id}
+                className="border-t hover:bg-gray-50"
+              >
+                <td className="py-3 px-2 ">{transaction.transactionId}</td>
+                <td className="hidden lg:block py-3 px-2">
+                  {transaction.userName}
+                </td>
+                <td className="py-3 px-2">{transaction.type}</td>
+                <td className="py-3 px-2">{transaction.amount}</td>
+                <td className="py-3 px-2">
+                  {new Date(transaction.datetime).toLocaleString()}
+                </td>
+                <td className="py-3 px-2 hidden lg:block">
+                  {transaction.description}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
+      {sortedData && sortedData.length > 10 ? (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      ) : (
+        <></>
+      )}
 
       {selectedTransaction && (
         <TransactionModal
