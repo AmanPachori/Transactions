@@ -11,34 +11,37 @@ export const closeToSumTransaction = (
 ): Output => {
   const n = transactions.length;
 
-  const sortedTransactions = [...transactions].sort(
-    (a, b) => a.amount - b.amount
-  );
+  const dp: { sum: number; transactions: ITransaction[] }[] = Array(
+    totalAmount + 1
+  ).fill(null);
 
-  let closest = 0;
-  let closestSet: ITransaction[] = [];
+  dp[0] = { sum: 0, transactions: [] };
 
-  const SubSet = (
-    index: number,
-    currSum: number,
-    currSet: ITransaction[]
-  ): void => {
-    if (currSum > totalAmount) return;
+  for (const transaction of transactions) {
+    const amount = transaction.amount;
 
-    if (currSum > closest) {
-      closest = currSum;
-      closestSet = [...currSet];
+    for (let currAmount = totalAmount; currAmount >= amount; currAmount--) {
+      if (dp[currAmount - amount]) {
+        const newSum = dp[currAmount - amount].sum + amount;
+
+        if (!dp[currAmount] || newSum > dp[currAmount].sum) {
+          dp[currAmount] = {
+            sum: newSum,
+            transactions: [
+              ...dp[currAmount - amount].transactions,
+              transaction,
+            ],
+          };
+        }
+      }
     }
+  }
 
-    for (let i = index; i < n; i++) {
-      SubSet(i + 1, currSum + sortedTransactions[i].amount, [
-        ...currSet,
-        sortedTransactions[i],
-      ]);
+  for (let i = totalAmount; i >= 0; i--) {
+    if (dp[i]) {
+      return { transactions: dp[i].transactions, total: dp[i].sum };
     }
-  };
+  }
 
-  SubSet(0, 0, []);
-
-  return { transactions: closestSet, total: closest };
+  return { transactions: [], total: 0 };
 };
