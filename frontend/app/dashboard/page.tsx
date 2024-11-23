@@ -7,218 +7,17 @@ import CreateTxnModal from "../components/createTransaction/CreateTxn";
 import CreateReportModal from "../components/report/CreateReportInput";
 import { Transaction, TransactionReport } from "../utils/type";
 import ReportModal from "../components/report/ReportModal";
-import { GenerateReport, Search } from "../utils/getData";
+import { GenerateReport, Search, startCron, stopCron } from "../utils/getData";
 
 export default function Dashboard() {
   const [reportModal, setReportModal] = useState<boolean>(false);
   const [reprotdata, setReportData] = useState<TransactionReport>();
   const [txnData, setTxnData] = useState<Transaction[]>();
-
-  const data = [
-    {
-      _id: "6740638143c78eb3565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c78eb3565dde01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "674063814301",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "6740b3565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "638143c78eb3565dde01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "6738143c78eb3565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "67408143c78eb3565dde01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "674068143c78eb3565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "67406381565dde01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c73565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c78565dd01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "67406381c78eb3565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c78565dde01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143eb3565dde00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c78eb3dde01",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c78eb3565e00",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user1",
-      type: "TRANSFER",
-      amount: 5000,
-      description: "amount is being transferred to xyz from abc",
-      datetime: "2024-11-22T10:57:05.635Z",
-      __v: 0,
-    },
-    {
-      _id: "6740638143c78eb3565dde1",
-      transactionId: "12345654321",
-      userId: "674044a74e5fee2de22dc11d",
-      userName: "user2",
-      type: "PAYMENT",
-      amount: 1500,
-      description: "payment received from abc",
-      datetime: "2024-11-21T08:30:00.000Z",
-      __v: 0,
-    },
-  ];
-
   const [searchTxn, setSearchTxn] = useState("");
   const [isTxnModalOpen, setTxnIsModalOpen] = useState(false);
   const [isReportCreateModalOpen, setIsReportCreateModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [iscron, setIscron] = useState<boolean>(false);
 
   async function handleGenerateReport(
     startDate: string,
@@ -236,10 +35,13 @@ export default function Dashboard() {
     amount: number
   ) {
     const data = await Search(startDate, endDate, amount);
-    console.log(data);
     setTxnData(data.transactions);
 
     setIsSearchModalOpen(false);
+  }
+  async function handleSearch(description: string) {
+    const data = await Search("", "", "", description);
+    setTxnData(data.transactions);
   }
 
   useEffect(() => {
@@ -248,7 +50,16 @@ export default function Dashboard() {
       setTxnData(data.transactions);
     }
     fetchData();
-  }, []);
+    let interval: NodeJS.Timeout;
+
+    if (iscron) {
+      interval = setInterval(async () => {
+        const data = await Search("", "", "");
+        setTxnData(data.transactions);
+      }, 60000);
+    }
+    return () => clearInterval(interval);
+  }, [iscron]);
 
   if (txnData) {
     return (
@@ -266,7 +77,7 @@ export default function Dashboard() {
             />
             <button
               onClick={() => {
-                window.location.href = "/signin";
+                handleSearch(searchTxn);
               }}
               className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
             >
@@ -282,6 +93,27 @@ export default function Dashboard() {
             </button>
           </div>
           <div>
+            {iscron ? (
+              <button
+                onClick={() => {
+                  stopCron();
+                  setIscron(false);
+                }}
+                className="px-4 py-2 text-white bg-red-700 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
+              >
+                Stop Cron
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  startCron();
+                  setIscron(true);
+                }}
+                className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
+              >
+                Start Cron
+              </button>
+            )}
             <button
               onClick={() => {
                 setTxnIsModalOpen(true);
@@ -299,6 +131,16 @@ export default function Dashboard() {
               Genrate Report
             </button>
           </div>
+        </div>
+        <div>
+          {iscron ? (
+            <p className="text-red-600 m-4">
+              ***Cron job is running adding txn every second and ui updates
+              every 1 minute***
+            </p>
+          ) : (
+            <p>{iscron}</p>
+          )}
         </div>
         <SortableTable data={txnData} />
         {isTxnModalOpen && (

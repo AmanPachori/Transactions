@@ -12,9 +12,7 @@ export default function Signin() {
     try {
       const url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/signup`;
       const response = await axios.post(url, { name, email, password });
-      console.log(response);
       if (response.status === 201) {
-        console.log("signup successful");
       }
     } catch (error) {
       console.error("Error during signup:", error);

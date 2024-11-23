@@ -12,6 +12,7 @@ export default function CreateTxnModal(
   const [type, setType] = useState<string>("DEPOSIT");
   const [amount, setAmount] = useState<number | string>("");
   const [description, setDescription] = useState<string>("");
+  const token = localStorage.getItem("Token");
 
   const handleCreateTransaction = async () => {
     const payload = {
@@ -20,26 +21,33 @@ export default function CreateTxnModal(
       description,
     };
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+    if (token) {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/create`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error creating transaction:", errorData);
-        return;
+            body: JSON.stringify(payload),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error creating transaction:", errorData);
+          return;
+        }
+        onClose();
+      } catch (error) {
+        console.error("Error creating transaction:", error);
       }
-      onClose();
-    } catch (error) {
-      console.error("Error creating transaction:", error);
+    } else {
+      alert("Please Signin to create a new transaction");
+      window.location.href = "/signin";
     }
   };
 

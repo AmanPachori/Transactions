@@ -16,7 +16,6 @@ export const GenerateReport = async (
         method: "GET",
       }
     );
-    console.log(response);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -31,16 +30,17 @@ export const GenerateReport = async (
   }
 };
 export const Search = async (
-  startDate: string,
-  endDate: string,
-  amount: string | number
+  startDate?: string,
+  endDate?: string,
+  amount?: string | number,
+  description?: string
 ) => {
   try {
-    const queryParams = new URLSearchParams({
-      startDate,
-      endDate,
-      amount: amount.toString(),
-    }).toString();
+    const queryParams = new URLSearchParams();
+    if (description) queryParams.append("description", description);
+    if (startDate) queryParams.append("startDate", startDate);
+    if (endDate) queryParams.append("endDate", endDate);
+    if (amount !== undefined) queryParams.append("amount", amount.toString());
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/search?${queryParams}`,
@@ -48,7 +48,6 @@ export const Search = async (
         method: "GET",
       }
     );
-    console.log(response);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -62,3 +61,22 @@ export const Search = async (
     console.error("Error generating report:", error);
   }
 };
+
+export async function startCron() {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/cron/start`, {
+      method: "POST",
+    });
+  } catch (error) {
+    alert(`Error in starting cron job: ${error}`);
+  }
+}
+export async function stopCron() {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/cron/stop`, {
+      method: "POST",
+    });
+  } catch (error) {
+    alert(`Error in stoping cron job: ${error}`);
+  }
+}
