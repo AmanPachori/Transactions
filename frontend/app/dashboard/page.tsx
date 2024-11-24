@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CustomInput } from "../components/common/CustomInput";
-import SortableTable from "../components/common/Table";
+import { SortableTable } from "../components/common/Table";
 import Navbar from "../components/navbar/Navbar";
 import CreateTxnModal from "../components/createTransaction/CreateTxn";
 import CreateReportModal from "../components/report/CreateReportInput";

@@ -8,16 +8,16 @@ interface SortableTableProps {
   data: Transaction[] | undefined;
 }
 
-const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
+export function SortableTable({ data }: SortableTableProps) {
   const [sortField, setSortField] = useState<string>("amount");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
 
   const sortData = (field: string) => {
     const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
@@ -40,8 +40,8 @@ const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
 
   const sortedData = Array.isArray(data)
     ? data.sort((x, y) => {
-        const a: unknown = field(x, sortField);
-        const b: unknown = field(y, sortField);
+        const a = field(x, sortField) as string | number;
+        const b = field(y, sortField) as string | number;
 
         if (a < b) return sortOrder === "asc" ? -1 : 1;
         if (a > b) return sortOrder === "asc" ? 1 : -1;
@@ -131,6 +131,4 @@ const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
       )}
     </div>
   );
-};
-
-export default SortableTable;
+}

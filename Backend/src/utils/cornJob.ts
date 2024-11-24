@@ -15,7 +15,6 @@ const createTransaction = async () => {
     datetime: new Date(),
   });
   await transaction.save();
-  console.log("Transaction saved:", transaction);
 };
 
 const startCronJob = () => {
