@@ -9,7 +9,7 @@ export function downloadReport(
     return;
   }
 
-  const headers = Object.keys(transactions[0]);
+  const headers = Object.keys(transactions[0]) as (keyof Transaction)[];
   const rows = transactions.map((transaction) =>
     headers.map((header) => JSON.stringify(transaction[header] ?? "")).join(",")
   );
