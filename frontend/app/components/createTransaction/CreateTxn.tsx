@@ -41,6 +41,7 @@ export default function CreateTxnModal(
           console.error("Error creating transaction:", errorData);
           return;
         }
+        window.location.reload();
         onClose();
       } catch (error) {
         console.error("Error creating transaction:", error);

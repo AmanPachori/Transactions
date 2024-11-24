@@ -62,7 +62,7 @@ const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
   return (
     <div className="overflow-x-auto mx-4 rounded-xl border border-gray-600">
       <table className="min-w-full bg-white text-left">
-        <thead className="bg-gray-100">
+        <thead className="bg-gray-100 text-sm sm:text-md">
           <tr>
             <th className="py-3 px-2 ">Txn Id</th>
             <th className="py-3 px-2 hidden lg:block">User Name</th>
@@ -95,7 +95,7 @@ const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
               <tr
                 onClick={() => setSelectedTransaction(transaction)}
                 key={transaction._id}
-                className="border-t hover:bg-gray-50"
+                className="border-t text-sm md:text-md hover:bg-gray-50"
               >
                 <td className="py-3 px-2 ">{transaction.transactionId}</td>
                 <td className="hidden lg:block py-3 px-2">

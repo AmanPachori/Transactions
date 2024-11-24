@@ -15,7 +15,9 @@ export const CustomInput = ({
 }: CustomInputType) => {
   return (
     <div>
-      <label className="block  text-sm text-black font-semibold">{label}</label>
+      <label className="block  text-sm  text-black font-semibold">
+        {label}
+      </label>
       <input
         type={type || "text"}
         id="first_name"
