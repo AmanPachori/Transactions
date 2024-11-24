@@ -28,7 +28,6 @@ const createTransaction = () => __awaiter(void 0, void 0, void 0, function* () {
         datetime: new Date(),
     });
     yield transaction.save();
-    console.log("Transaction saved:", transaction);
 });
 const startCronJob = () => {
     if (!cronJob) {
