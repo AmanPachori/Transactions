@@ -28,7 +28,7 @@ export default function CreateReportModal(
     <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="border bg-white p-10 md:w-[50vw] rounded-lg">
         <div className=" flex justify-between items-center mb-3">
-          <div className="text-3xl font-extrabold">
+          <div className="text-md md:text-3xl font-extrabold">
             {typeofModal != "search" ? "Generate Report" : "Search"}
           </div>
           <button

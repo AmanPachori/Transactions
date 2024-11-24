@@ -56,7 +56,7 @@ export default function CreateTxnModal(
     <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="border bg-white p-10 md:w-[50vw] rounded-lg">
         <div className=" flex justify-between items-center mb-3">
-          <div className="text-3xl font-extrabold">Create Txn</div>
+          <div className="text-md md:text-3xl font-extrabold">Create Txn</div>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-red-500"
