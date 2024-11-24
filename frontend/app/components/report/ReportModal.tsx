@@ -1,7 +1,7 @@
 "use client";
 import { TransactionReport } from "@/app/utils/type";
 import React from "react";
-import SortableTable from "../common/Table";
+import { SortableTable } from "../common/Table";
 import { downloadReport } from "@/app/utils/reportDownload";
 interface ReportModalProps {
   TransactionReport: TransactionReport | undefined;
