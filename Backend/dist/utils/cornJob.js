@@ -23,11 +23,12 @@ const createTransaction = () => __awaiter(void 0, void 0, void 0, function* () {
         userId: "63f9efb3c657d425287838c0",
         userName: "User1",
         type: enum_1.TransactionTypeEnum.DEPOSIT,
-        amount: Math.floor(Math.random() * 100000),
+        amount: Math.floor(Math.random() * 1000),
         description: "Deposit transaction genrated from cron job",
         datetime: new Date(),
     });
     yield transaction.save();
+    console.log("Transaction saved:", transaction);
 });
 const startCronJob = () => {
     if (!cronJob) {

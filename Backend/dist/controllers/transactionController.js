@@ -32,7 +32,7 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!user) {
             return (0, errorsUtils_1.handleError)(res, "User not found", 404);
         }
-        const transactionId = `${Math.floor(Math.random() * 100000)}${userId}${Math.floor(Math.random() * 100)}`;
+        const transactionId = `${Math.floor(Math.random() * 100000)}`;
         const transaction = new transactionModel_1.Transaction({
             transactionId,
             userId,
@@ -76,7 +76,7 @@ const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.getTransactionById = getTransactionById;
 const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { amount, startDate, endDate, description } = req.query;
+    const { amount, startDate, endDate, description, page, limit } = req.query;
     let query = {};
     if (amount)
         query.amount = (0, amountUtils_1.parseAmount)(amount);
@@ -89,18 +89,44 @@ const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     if (description)
         query.description = { $regex: description, $options: "i" };
-    try {
-        const transactions = yield transactionModel_1.Transaction.find(query);
-        if (transactions.length === 0) {
+    let transactions;
+    let totalTransactions;
+    if (page && limit) {
+        const pgNo = parseInt(page, 10) || 1;
+        const pgSize = parseInt(limit, 10) || 10;
+        const skip = (pgNo - 1) * pgSize;
+        transactions = yield transactionModel_1.Transaction.find(query).skip(skip).limit(pgSize);
+        totalTransactions = yield transactionModel_1.Transaction.countDocuments(query);
+        if (totalTransactions) {
             return (0, errorsUtils_1.handleError)(res, "No transactions found", 404);
         }
         res.status(200).json({
             message: "Transactions fetched successfully",
-            transactions,
+            data: {
+                transactions,
+                pagination: {
+                    totalTransactions,
+                    currentPage: pgNo,
+                    totalPages: Math.ceil(totalTransactions / pgSize),
+                    pgSize,
+                },
+            },
         });
     }
-    catch (error) {
-        (0, errorsUtils_1.handleError)(res, "Error searching transactions");
+    else {
+        try {
+            transactions = yield transactionModel_1.Transaction.find(query);
+            if (transactions.length === 0) {
+                return (0, errorsUtils_1.handleError)(res, "No transactions found", 404);
+            }
+            res.status(200).json({
+                message: "Transactions fetched successfully",
+                transactions,
+            });
+        }
+        catch (error) {
+            (0, errorsUtils_1.handleError)(res, "Error searching transactions");
+        }
     }
 });
 exports.searchTransactions = searchTransactions;

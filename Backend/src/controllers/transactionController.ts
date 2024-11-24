@@ -24,9 +24,7 @@ export const createTransaction = async (
       return handleError(res, "User not found", 404);
     }
 
-    const transactionId = `${Math.floor(
-      Math.random() * 100000
-    )}${userId}${Math.floor(Math.random() * 100)}`;
+    const transactionId = `${Math.floor(Math.random() * 100000)}`;
 
     const transaction = new Transaction({
       transactionId,
@@ -82,7 +80,7 @@ export const searchTransactions = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { amount, startDate, endDate, description } = req.query;
+  const { amount, startDate, endDate, description, page, limit } = req.query;
   let query: any = {};
 
   if (amount) query.amount = parseAmount(amount as string);
@@ -93,19 +91,45 @@ export const searchTransactions = async (
   }
   if (description) query.description = { $regex: description, $options: "i" };
 
-  try {
-    const transactions = await Transaction.find(query);
+  let transactions;
+  let totalTransactions;
 
-    if (transactions.length === 0) {
+  if (page && limit) {
+    const pgNo = parseInt(page as string, 10) || 1;
+    const pgSize = parseInt(limit as string, 10) || 10;
+    const skip = (pgNo - 1) * pgSize;
+    transactions = await Transaction.find(query).skip(skip).limit(pgSize);
+    totalTransactions = await Transaction.countDocuments(query);
+    if (totalTransactions) {
       return handleError(res, "No transactions found", 404);
     }
-
     res.status(200).json({
       message: "Transactions fetched successfully",
-      transactions,
+      data: {
+        transactions,
+        pagination: {
+          totalTransactions,
+          currentPage: pgNo,
+          totalPages: Math.ceil(totalTransactions / pgSize),
+          pgSize,
+        },
+      },
     });
-  } catch (error) {
-    handleError(res, "Error searching transactions");
+  } else {
+    try {
+      transactions = await Transaction.find(query);
+
+      if (transactions.length === 0) {
+        return handleError(res, "No transactions found", 404);
+      }
+
+      res.status(200).json({
+        message: "Transactions fetched successfully",
+        transactions,
+      });
+    } catch (error) {
+      handleError(res, "Error searching transactions");
+    }
   }
 };
 
