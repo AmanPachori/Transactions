@@ -1,5 +1,6 @@
 import React from "react";
 import { Transaction } from "@/app/utils/type";
+import { getTxnDetails } from "@/app/utils/constants";
 interface TransactionModalProps {
   transaction: Transaction | null;
   onClose: () => void;
@@ -14,6 +15,8 @@ export default function TransactionModal(
     return null;
   }
 
+  const details = getTxnDetails(transaction);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg w-96 p-6">
@@ -27,36 +30,17 @@ export default function TransactionModal(
           </button>
         </div>
         <div className="mt-4 space-y-4">
-          <div>
-            <span className="font-semibold">Transaction ID:</span>{" "}
-            {transaction.transactionId}
-          </div>
-          <div>
-            <span className="font-semibold">User ID:</span> {transaction.userId}
-          </div>
-          <div>
-            <span className="font-semibold">User Name:</span>{" "}
-            {transaction.userName}
-          </div>
-          <div>
-            <span className="font-semibold">Type:</span> {transaction.type}
-          </div>
-          <div>
-            <span className="font-semibold">Amount:</span> ₹{transaction.amount}
-          </div>
-          <div>
-            <span className="font-semibold">Description:</span>{" "}
-            {transaction.description}
-          </div>
-          <div>
-            <span className="font-semibold">Date & Time:</span>{" "}
-            {new Date(transaction.datetime).toLocaleString()}
-          </div>
+          {details.map(({ label, value }) => (
+            <div key={label}>
+              <span className="font-semibold">{label} - </span>
+              {value}
+            </div>
+          ))}
         </div>
         <div className="mt-6">
           <button
             onClick={onClose}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            className="w-full  text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 py-2 px-4 rounded-md "
           >
             Close
           </button>

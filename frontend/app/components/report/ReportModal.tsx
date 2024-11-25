@@ -13,7 +13,7 @@ export default function ReportModal(ReportModalProps: ReportModalProps) {
 
   return (
     <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="border bg-white p-10 w-[90vw] rounded-lg">
+      <div className="border bg-white py-10 px-3 md:p-10 w-[90vw] rounded-lg">
         <div className=" flex justify-between items-center mb-3">
           <div className="text-md md:text-3xl font-extrabold"> Report</div>
           <button
@@ -33,11 +33,15 @@ export default function ReportModal(ReportModalProps: ReportModalProps) {
               Total Amount: ₹{TransactionReport?.report.SumAmount}
               <br />
               <span className="text-red-600">
-                **return amount closet to your input if amount provided **
+                **Return the amount closest to the input provided, based on the
+                algorithm, and wriiten in the backend **
               </span>
             </p>
           </div>
-          <SortableTable data={TransactionReport?.transactions} />
+          <SortableTable
+            data={TransactionReport?.transactions}
+            itemsPerPage={7}
+          />
         </div>
         <button
           type="button"

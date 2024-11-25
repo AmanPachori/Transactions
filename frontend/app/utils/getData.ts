@@ -1,3 +1,4 @@
+// generate report api call
 export const GenerateReport = async (
   startDate: string,
   endDate: string,
@@ -19,7 +20,8 @@ export const GenerateReport = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Error generating report:", errorData);
+      alert(errorData.message);
+
       return;
     }
 
@@ -29,10 +31,15 @@ export const GenerateReport = async (
     console.error("Error generating report:", error);
   }
 };
+
+// Search api call
+
 export const Search = async (
   startDate?: string,
   endDate?: string,
   amount?: string | number,
+  userName?: string,
+  transactionId?: string,
   description?: string
 ) => {
   try {
@@ -40,7 +47,12 @@ export const Search = async (
     if (description) queryParams.append("description", description);
     if (startDate) queryParams.append("startDate", startDate);
     if (endDate) queryParams.append("endDate", endDate);
-    if (amount !== undefined) queryParams.append("amount", amount.toString());
+    if (userName) queryParams.append("userName", userName);
+    if (transactionId) queryParams.append("transactionId", transactionId);
+    if (amount !== undefined && amount !== 0)
+      queryParams.append("amount", amount.toString());
+
+    console.log(queryParams);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/search?${queryParams}`,
@@ -51,7 +63,7 @@ export const Search = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Error generating report:", errorData);
+      alert(errorData.message);
       return;
     }
 
@@ -62,6 +74,8 @@ export const Search = async (
   }
 };
 
+// start cron api call
+
 export async function startCron() {
   try {
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/cron/start`, {
@@ -71,6 +85,9 @@ export async function startCron() {
     alert(`Error in starting cron job: ${error}`);
   }
 }
+
+// stop cron api call
+
 export async function stopCron() {
   try {
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/cron/stop`, {
@@ -80,3 +97,41 @@ export async function stopCron() {
     alert(`Error in stoping cron job: ${error}`);
   }
 }
+
+// Create Txn api call
+
+export const createTransaction = async (
+  payload: { type: string; amount: number; description: string },
+  token: string | null
+): Promise<boolean> => {
+  if (token) {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message);
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+      return false;
+    }
+  } else {
+    alert("Please Signin to create a new transaction");
+    window.location.href = "/signin";
+    return false;
+  }
+};

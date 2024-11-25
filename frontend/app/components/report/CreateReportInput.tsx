@@ -4,7 +4,14 @@ import { CustomInput } from "../common/CustomInput";
 
 interface TransactionModalProps {
   onClose: () => void;
-  onGenerate: (startDate: string, endDate: string, amount: number) => void;
+  onGenerate: (
+    startDate: string,
+    endDate: string,
+    amount: number,
+    userId?: string,
+    userName?: string,
+    transactionId?: string
+  ) => void;
   typeofModal: string;
 }
 
@@ -15,13 +22,21 @@ export default function CreateReportModal(
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [amount, setAmount] = useState<number | string>("");
+  const [userName, setUserName] = useState<string>("");
+  const [transactionId, setTransactionId] = useState<string>("");
 
   const handleGenerateClick = () => {
-    if (!amount) {
+    if (!amount && !startDate && !endDate && !transactionId && !userName) {
       alert("Please fill amount atleast!");
       return;
     }
-    onGenerate(startDate, endDate, Number(amount));
+    onGenerate(
+      startDate,
+      endDate,
+      Number(amount),
+      typeofModal === "search" ? userName : undefined,
+      typeofModal === "search" ? transactionId : undefined
+    );
   };
 
   return (
@@ -60,6 +75,24 @@ export default function CreateReportModal(
             onChange={(e) => setAmount(e.target.value)}
             value={amount.toString()}
           />
+          {typeofModal === "search" && (
+            <>
+              <CustomInput
+                label="User Name"
+                placeholder="Enter User Name"
+                type="text"
+                onChange={(e) => setUserName(e.target.value)}
+                value={userName}
+              />
+              <CustomInput
+                label="Transaction ID"
+                placeholder="Enter Transaction ID"
+                type="text"
+                onChange={(e) => setTransactionId(e.target.value)}
+                value={transactionId}
+              />
+            </>
+          )}
           <button
             type="button"
             className="mt-8 w-full text-white bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"

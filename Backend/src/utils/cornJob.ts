@@ -8,10 +8,10 @@ const createTransaction = async () => {
   const transaction = new Transaction({
     transactionId: Math.floor(Math.random() * 100000),
     userId: "63f9efb3c657d425287838c0",
-    userName: "User1",
+    userName: "Cron Job user",
     type: TransactionTypeEnum.DEPOSIT,
     amount: Math.floor(Math.random() * 1000),
-    description: "Deposit transaction genrated from cron job",
+    description: "deposit transaction genrated from the cron job",
     datetime: new Date(),
   });
   await transaction.save();
@@ -21,7 +21,7 @@ const startCronJob = () => {
   if (!cronJob) {
     cronJob = cron.schedule("* * * * * *", createTransaction);
   } else {
-    console.log("Cron job already running");
+    console.log("cron job already running");
   }
 };
 
@@ -30,7 +30,7 @@ const stopCronJob = () => {
     cronJob.stop();
     cronJob = null;
   } else {
-    console.log("No cron job is running");
+    console.log("no cron job is running");
   }
 };
 

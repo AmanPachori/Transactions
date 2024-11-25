@@ -1,13 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CustomInput } from "../components/common/CustomInput";
 import { SortableTable } from "../components/common/Table";
 import Navbar from "../components/navbar/Navbar";
 import CreateTxnModal from "../components/createTransaction/CreateTxn";
 import CreateReportModal from "../components/report/CreateReportInput";
 import { Transaction, TransactionReport } from "../utils/type";
 import ReportModal from "../components/report/ReportModal";
-import { GenerateReport, Search, startCron, stopCron } from "../utils/getData";
+import DashboardNav from "../components/common/DashboardNav";
+import {
+  handleGenerateReport,
+  handleSearch,
+  handleSearchModal,
+} from "../utils/constants";
+import { Search, startCron, stopCron } from "../utils/getData";
 
 export default function Dashboard() {
   const [reportModal, setReportModal] = useState<boolean>(false);
@@ -18,31 +23,6 @@ export default function Dashboard() {
   const [isReportCreateModalOpen, setIsReportCreateModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [iscron, setIscron] = useState<boolean>(false);
-
-  async function handleGenerateReport(
-    startDate: string,
-    endDate: string,
-    amount: number
-  ) {
-    const reportData = await GenerateReport(startDate, endDate, amount);
-    setReportData(reportData);
-    setIsReportCreateModalOpen(false);
-    setReportModal(true);
-  }
-  async function handleSearchModal(
-    startDate: string,
-    endDate: string,
-    amount: number
-  ) {
-    const data = await Search(startDate, endDate, amount);
-    setTxnData(data.transactions);
-
-    setIsSearchModalOpen(false);
-  }
-  async function handleSearch(description: string) {
-    const data = await Search("", "", "", description);
-    setTxnData(data.transactions);
-  }
 
   useEffect(() => {
     async function fetchData() {
@@ -65,95 +45,58 @@ export default function Dashboard() {
     return (
       <div className="">
         <Navbar />
-        <div className="flex flex-wrap items-center justify-start m-4  ">
-          <CustomInput
-            label={""}
-            placeholder={"Serach based partial desc search"}
-            onChange={(e) => {
-              setSearchTxn(e.target.value);
-            }}
-            value={searchTxn}
-          />
-          <button
-            onClick={() => {
-              handleSearch(searchTxn);
-            }}
-            className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
-          >
-            Search
-          </button>
-          <button
-            onClick={() => {
-              setIsSearchModalOpen(true);
-            }}
-            className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
-          >
-            Filtered Search
-          </button>
-
-          {iscron ? (
-            <button
-              onClick={() => {
-                stopCron();
-                setIscron(false);
-              }}
-              className="px-4 py-2 text-white bg-red-700 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
-            >
-              Stop Cron
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                startCron();
-                setIscron(true);
-              }}
-              className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
-            >
-              Start Cron
-            </button>
-          )}
-          <button
-            onClick={() => {
-              setTxnIsModalOpen(true);
-            }}
-            className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
-          >
-            Create Txn
-          </button>
-          <button
-            onClick={() => {
-              setIsReportCreateModalOpen(true);
-            }}
-            className="px-4 py-2 text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 rounded-md m-1 "
-          >
-            Genrate Report
-          </button>
-        </div>
-        <div>
-          {iscron ? (
-            <p className="text-red-600 m-4">
-              ***Cron job is running adding txn every second and ui updates
-              every 1 minute***
-            </p>
-          ) : (
-            <p>{iscron}</p>
-          )}
-        </div>
-        <SortableTable data={txnData} />
+        <DashboardNav
+          searchTxn={searchTxn}
+          setSearchTxn={setSearchTxn}
+          handleSearch={(description) => handleSearch(description, setTxnData)}
+          setIsSearchModalOpen={setIsSearchModalOpen}
+          iscron={iscron}
+          setIscron={setIscron}
+          setTxnIsModalOpen={setTxnIsModalOpen}
+          setIsReportCreateModalOpen={setIsReportCreateModalOpen}
+          stopCron={stopCron}
+          startCron={startCron}
+        />
+        {iscron && (
+          <p className="text-red-600 m-4">
+            ***Cron job is running adding txn every second and UI updates every
+            1 minute***
+          </p>
+        )}
+        <SortableTable data={txnData} itemsPerPage={10} />
         {isTxnModalOpen && (
           <CreateTxnModal onClose={() => setTxnIsModalOpen(false)} />
         )}
         {isReportCreateModalOpen && (
           <CreateReportModal
             onClose={() => setIsReportCreateModalOpen(false)}
-            onGenerate={handleGenerateReport}
+            onGenerate={(startDate, endDate, amount) =>
+              handleGenerateReport(
+                startDate,
+                endDate,
+                amount,
+                setReportData,
+                setIsReportCreateModalOpen,
+                setReportModal
+              )
+            }
             typeofModal={""}
           />
         )}
         {isSearchModalOpen && (
           <CreateReportModal
             onClose={() => setIsSearchModalOpen(false)}
-            onGenerate={handleSearchModal}
+            onGenerate={(startDate, endDate, amount, userName, transactionId) =>
+              handleSearchModal(
+                startDate,
+                endDate,
+                amount,
+                userName,
+                transactionId,
+                setTxnData,
+                setIsSearchModalOpen
+              )
+            }
             typeofModal={"search"}
           />
         )}

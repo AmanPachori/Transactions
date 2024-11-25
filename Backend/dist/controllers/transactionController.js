@@ -76,7 +76,7 @@ const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.getTransactionById = getTransactionById;
 const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { amount, startDate, endDate, description, page, limit } = req.query;
+    const { userName, userId, transactionId, amount, startDate, endDate, description, page, limit, } = req.query;
     let query = {};
     if (amount)
         query.amount = (0, amountUtils_1.parseAmount)(amount);
@@ -89,6 +89,13 @@ const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     if (description)
         query.description = { $regex: description, $options: "i" };
+    if (userName)
+        query.userName = userName;
+    if (userId)
+        query.userId = userId;
+    if (transactionId)
+        query.transactionId = transactionId;
+    console.log(query);
     let transactions;
     let totalTransactions;
     if (page && limit) {

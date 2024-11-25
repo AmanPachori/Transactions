@@ -7,6 +7,7 @@ import { handleError } from "../utils/common/errorsUtils";
 import { parseAmount } from "../utils/common/amountUtils";
 import { closeToSumTransaction } from "../utils/common/closestTothesum";
 
+//  Create Transaction Function
 export const createTransaction = async (
   req: Request,
   res: Response
@@ -46,6 +47,7 @@ export const createTransaction = async (
   }
 };
 
+// Get Transaction by Id functio
 export const getTransactionById = async (
   req: Request,
   res: Response
@@ -76,11 +78,22 @@ export const getTransactionById = async (
   }
 };
 
+//Searching Transaction function
 export const searchTransactions = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { amount, startDate, endDate, description, page, limit } = req.query;
+  const {
+    userName,
+    userId,
+    transactionId,
+    amount,
+    startDate,
+    endDate,
+    description,
+    page,
+    limit,
+  } = req.query;
   let query: any = {};
 
   if (amount) query.amount = parseAmount(amount as string);
@@ -90,6 +103,9 @@ export const searchTransactions = async (
     if (endDate) query.datetime.$lte = validateDate(endDate as string);
   }
   if (description) query.description = { $regex: description, $options: "i" };
+  if (userName) query.userName = userName;
+  if (userId) query.userId = userId;
+  if (transactionId) query.transactionId = transactionId;
 
   let transactions;
   let totalTransactions;
@@ -133,6 +149,7 @@ export const searchTransactions = async (
   }
 };
 
+// generate Transaction report function
 export const generateTransactions = async (
   req: Request,
   res: Response

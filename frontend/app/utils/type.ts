@@ -18,3 +18,16 @@ export interface TransactionReport {
   };
   transactions: Transaction[];
 }
+
+export interface DashboardNavProps {
+  searchTxn: string;
+  setSearchTxn: React.Dispatch<React.SetStateAction<string>>;
+  handleSearch: (description: string) => void;
+  setIsSearchModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  iscron: boolean;
+  setIscron: React.Dispatch<React.SetStateAction<boolean>>;
+  setTxnIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsReportCreateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  stopCron: () => void;
+  startCron: () => void;
+}

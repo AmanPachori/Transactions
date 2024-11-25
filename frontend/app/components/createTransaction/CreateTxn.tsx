@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { CustomInput } from "../common/CustomInput";
+import { createTransaction } from "@/app/utils/getData";
+import { transactionTypes } from "@/app/utils/constants";
 interface TransactionModalProps {
   onClose: () => void;
 }
-
 export default function CreateTxnModal(
   TransactionModalProps: TransactionModalProps
 ) {
@@ -21,34 +22,11 @@ export default function CreateTxnModal(
       description,
     };
 
-    if (token) {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction/create`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-
-            body: JSON.stringify(payload),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error creating transaction:", errorData);
-          return;
-        }
-        window.location.reload();
-        onClose();
-      } catch (error) {
-        console.error("Error creating transaction:", error);
-      }
-    } else {
-      alert("Please Signin to create a new transaction");
-      window.location.href = "/signin";
+    const isCreated = await createTransaction(payload, token);
+    console.log(isCreated);
+    if (isCreated) {
+      window.location.reload();
+      onClose();
     }
   };
 
@@ -73,12 +51,11 @@ export default function CreateTxnModal(
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="DEPOSIT">Deposit</option>
-            <option value="TRANSFER">Transfer</option>
-            <option value="EXTERNAL_PAYMENT">External Payment</option>
-            <option value="WITHDRAWAL">Withdrawal</option>
-            <option value="REFUND">Refund</option>
-            <option value="OTHER">Other</option>
+            {transactionTypes.map((type) => (
+              <option key={type} value={type}>
+                {type.replace("_", " ")}
+              </option>
+            ))}
           </select>
           <CustomInput
             label="Amount"
