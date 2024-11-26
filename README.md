@@ -187,8 +187,9 @@ In frontend folder run
 
 - **Description:** Starts the cron job to perform scheduled tasks.
 - **Request:**
+
   - No body required.
-  - **Authentication**: This request requires authentication (use a valid token).
+
 - **Response:**
   - **200 OK (Success)**: The cron job was started successfully.
   - **500 Internal Server Error**: An error occurred while starting the cron job.
@@ -201,7 +202,6 @@ In frontend folder run
 - **Request:**
 
   - No body required.
-  - **Authentication**: This request requires authentication (use a valid token).
 
 - **Response:**
   - **200 OK (Success)**: The cron job was stopped successfully.
