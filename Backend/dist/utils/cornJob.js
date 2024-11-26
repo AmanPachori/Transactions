@@ -21,10 +21,10 @@ const createTransaction = () => __awaiter(void 0, void 0, void 0, function* () {
     const transaction = new transactionModel_1.Transaction({
         transactionId: Math.floor(Math.random() * 100000),
         userId: "63f9efb3c657d425287838c0",
-        userName: "User1",
+        userName: "Cron Job user",
         type: enum_1.TransactionTypeEnum.DEPOSIT,
         amount: Math.floor(Math.random() * 1000),
-        description: "Deposit transaction genrated from cron job",
+        description: "deposit transaction genrated from the cron job",
         datetime: new Date(),
     });
     yield transaction.save();
@@ -34,7 +34,7 @@ const startCronJob = () => {
         cronJob = node_cron_1.default.schedule("* * * * * *", createTransaction);
     }
     else {
-        console.log("Cron job already running");
+        console.log("cron job already running");
     }
 };
 exports.startCronJob = startCronJob;
@@ -44,7 +44,7 @@ const stopCronJob = () => {
         cronJob = null;
     }
     else {
-        console.log("No cron job is running");
+        console.log("no cron job is running");
     }
 };
 exports.stopCronJob = stopCronJob;

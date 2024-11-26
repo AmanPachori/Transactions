@@ -64,9 +64,11 @@ export default function Dashboard() {
           </p>
         )}
         <SortableTable data={txnData} itemsPerPage={10} />
+        {/* Create Txn modal */}
         {isTxnModalOpen && (
           <CreateTxnModal onClose={() => setTxnIsModalOpen(false)} />
         )}
+        {/* Generate Report modal */}
         {isReportCreateModalOpen && (
           <CreateReportModal
             onClose={() => setIsReportCreateModalOpen(false)}
@@ -83,6 +85,7 @@ export default function Dashboard() {
             typeofModal={""}
           />
         )}
+        {/* Filtered Search Modal */}
         {isSearchModalOpen && (
           <CreateReportModal
             onClose={() => setIsSearchModalOpen(false)}
@@ -100,6 +103,7 @@ export default function Dashboard() {
             typeofModal={"search"}
           />
         )}
+        {/* Transaction Report Modal */}
         {reportModal && (
           <ReportModal
             TransactionReport={reprotdata}

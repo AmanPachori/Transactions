@@ -54,6 +54,9 @@ export default function CreateReportModal(
           </button>
         </div>
         <div className="pt-2">
+          <p className="text-red-600 m-4">
+            *** The date will be selected in the format mm-dd-yyyy: 00:00:00.***
+          </p>
           <CustomInput
             label="Start Date"
             placeholder="YYYY-MM-DD"

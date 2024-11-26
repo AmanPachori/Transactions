@@ -20,6 +20,7 @@ const dateUtlis_1 = require("../utils/common/dateUtlis");
 const errorsUtils_1 = require("../utils/common/errorsUtils");
 const amountUtils_1 = require("../utils/common/amountUtils");
 const closestTothesum_1 = require("../utils/common/closestTothesum");
+//  Create Transaction Function
 const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { type, amount, description } = req.body;
@@ -53,6 +54,7 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createTransaction = createTransaction;
+// Get Transaction by Id functio
 const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
@@ -75,6 +77,7 @@ const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getTransactionById = getTransactionById;
+//Searching Transaction function
 const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userName, userId, transactionId, amount, startDate, endDate, description, page, limit, } = req.query;
     let query = {};
@@ -95,7 +98,6 @@ const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
         query.userId = userId;
     if (transactionId)
         query.transactionId = transactionId;
-    console.log(query);
     let transactions;
     let totalTransactions;
     if (page && limit) {
@@ -137,6 +139,7 @@ const searchTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.searchTransactions = searchTransactions;
+// generate Transaction report function
 const generateTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { startDate, endDate, amount } = req.query;
     const stage = {};
